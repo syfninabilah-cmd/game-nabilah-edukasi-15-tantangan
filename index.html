@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Misi Android Studio: 15 Tantangan</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#0b1620;overflow:hidden;font-family:"Segoe UI",Tahoma,Arial,sans-serif}
+#stage{position:absolute;left:50%;top:50%;width:1280px;height:720px;transform-origin:0 0;background:#12263A;color:#fff;display:flex;flex-direction:column}
+#hd{height:64px;display:flex;align-items:center;gap:24px;padding:0 32px;background:#0b1620;font-size:20px}
+#hd b{flex:1;font-size:22px}
+#mn{flex:1;padding:20px 40px;overflow:hidden;position:relative}
+#ft{height:76px;display:flex;justify-content:space-between;align-items:center;padding:0 40px;background:#0b1620;font-size:20px}
+button{font:inherit;font-size:20px;cursor:pointer;min-height:48px;border-radius:10px;border:2px solid #5a7a98;background:#1c3a54;color:#fff;padding:8px 18px;text-align:left}
+button:hover:not(:disabled){border-color:#F2B84B}
+button:focus-visible,g:focus-visible{outline:3px solid #F2B84B;outline-offset:2px}
+button:disabled{opacity:.5;cursor:default}
+button.ok:disabled,button.bad:disabled{opacity:1}
+.pri{background:#F2B84B;color:#12263A;border-color:#F2B84B;font-weight:700;text-align:center}
+.ok{background:#1F7A52!important;border-color:#1F7A52!important;color:#fff!important}
+.bad{background:#B3261E!important;border-color:#B3261E!important;color:#fff!important}
+h1{font-size:56px;margin:0 0 8px}h2{font-size:30px;margin:0 0 8px}
+p{font-size:22px;line-height:1.4;margin:0 0 10px;max-width:880px}
+ul{font-size:21px;line-height:1.4;margin:0;padding-left:24px}li{margin-bottom:8px}
+.card{background:#1c3a54;border-radius:14px;padding:18px 24px}
+.row{display:flex;gap:28px}.col{flex:1;display:flex;flex-direction:column;gap:10px}
+#fb{min-height:56px;font-size:21px;padding:12px 18px;border-radius:10px;background:#0b1620;margin-top:12px}
+#fb.ok{background:#1F7A52!important}#fb.bad{background:#B3261E!important}
+.slot{font-size:20px;padding:11px 0;border-bottom:1px solid #3d5c78}
+.reg rect{fill:#284560;stroke:#8fb0cc;stroke-width:2;cursor:pointer}.reg text{fill:#fff;pointer-events:none;font-weight:700}
+.reg.sel rect{fill:#F2B84B}.reg.sel text{fill:#12263A}.reg.ok rect{fill:#1F7A52;cursor:default}.reg.ok text{fill:#fff}
+.ovl{position:absolute;inset:0;background:rgba(11,22,32,.93);display:flex;align-items:center;justify-content:center;text-align:center;z-index:5}
+textarea{width:100%;height:80px;font:inherit;font-size:19px;border-radius:8px;border:2px solid #5a7a98;padding:8px;background:#fff;color:#12263A}
+code{font-family:Consolas,monospace;background:#0b1620;padding:2px 8px;border-radius:6px;color:#F2B84B}
+[draggable=true]{cursor:grab}
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.mob #stage{position:fixed;left:0;top:0;width:100%;height:100%;transform:none!important}
+.mob #hd{height:auto;flex-wrap:wrap;gap:6px 10px;padding:8px 12px;font-size:14px}
+.mob #hd b{font-size:16px;flex:1 1 100%}
+.mob button{font-size:16px;min-height:44px;padding:6px 12px}
+.mob #hd button{min-height:36px;font-size:14px;padding:4px 10px}
+.mob #mn{padding:12px 14px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.mob #ft{height:auto;min-height:60px;padding:8px 12px;font-size:13px;gap:6px}
+.mob #ft button{min-height:44px;font-size:16px}
+.mob h1{font-size:34px}.mob h2{font-size:22px}
+.mob p{font-size:17px;max-width:none}.mob ul{font-size:16px}
+.mob .row{flex-direction:column;gap:14px}
+.mob .row[style*="height"]{height:auto!important}
+.mob .row>*{flex:none}
+.mob .col[style*="max-width"]{max-width:none!important}
+.mob svg{max-width:100%;height:auto}
+.mob svg[aria-label*="Ilustrasi"]{max-width:200px;margin:0 auto;display:block}
+.mob #fb{font-size:16px;min-height:48px}
+.mob .slot{font-size:16px;padding:8px 0}
+.mob .card{padding:12px 14px}
+.mob #mn div[style*="grid-template-columns"]{grid-template-columns:1fr 1fr!important}
+.mob .card[style*="Consolas"]{font-size:14px!important;line-height:2.2!important;word-break:break-word}
+.mob span[style*="min-width"]{min-width:80px!important}
+.mob .ovl{position:fixed}
+.mob [style*="font-size:56px"]{font-size:40px!important}
+</style></head><body>
+<div id="stage"><div id="hd"></div><div id="mn"></div><div id="ft"></div></div>
+<script>
+const E=id=>document.getElementById(id);
+const Z=v=>Array(16).fill(v),S={scr:'cover',done:Z(0),sc:Z(0),lv:Z(3),m:Z(null)};
+let ac,mute=false;
+const total=()=>S.sc.reduce((a,b)=>a+b,0);
+function snd(ok){if(mute)return;try{ac=ac||new AudioContext();const o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);o.type=ok?'sine':'square';o.frequency.value=ok?660:200;g.gain.value=.07;o.start();o.stop(ac.currentTime+(ok?.15:.25))}catch(e){}}
+function fb(t,c){const f=E('fb');if(f){f.textContent=t;f.className=c||''}}
+function stopT(){const m=S.m[4];if(m&&m.iv){clearInterval(m.iv);m.iv=null}}
+function lose(i){S.lv[i]--;snd(0);hud();if(S.lv[i]<=0){stopT();const d=document.createElement('div');d.className='ovl';d.innerHTML='<div class="card"><h2>Nyawa habis</h2><p>Tenang, setiap developer pernah gagal build. Baca petunjuk dengan teliti lalu coba lagi.</p><button class="pri" id="rt">Ulangi misi</button></div>';E('mn').appendChild(d);E('rt').onclick=()=>{S.lv[i]=3;S.sc[i]=0;S.done[i]=0;S.m[i]=null;go('m'+(i+1))}}}
+
+/* ---------- data ---------- */
+const P=[['Run','Menjalankan aplikasi ke emulator atau HP','run','Toolbar di bagian atas berisi tombol Run.'],
+['Project','Menampilkan struktur folder dan file proyek','pr','Panel di kiri menampilkan folder dan file.'],
+['Editor','Tempat menulis kode dan mengatur tampilan layout','ed','Bagian tengah adalah area kerja utama.'],
+['Device Manager','Membuat dan mengelola perangkat virtual (emulator)','dm','Panel di kanan mengelola perangkat virtual.'],
+['Logcat','Menampilkan log dan pesan error saat aplikasi berjalan','lg','Panel di bawah memuat pesan sistem.']];
+const PERM=[3,0,4,2,1];
+const ST=['Pilih New Project di layar Welcome','Pilih template Empty Activity','Isi nama aplikasi, package, bahasa, dan Minimum SDK','Klik Finish lalu tunggu Gradle sync selesai','Pilih emulator di Device Manager','Klik tombol Run'];
+const EX=['Proyek baru selalu dimulai dari sini.','Template menentukan kerangka awal aplikasi.','Identitas aplikasi harus jelas sebelum dibuat.','Gradle menyusun proyek sebelum bisa dijalankan.','Aplikasi butuh perangkat tujuan untuk berjalan.','Terakhir, jalankan dan lihat hasilnya.'];
+const SH=[3,0,5,2,4,1];
+const Q=[{q:'Klien melapor: aplikasi langsung tertutup (crash) saat tombol Simpan ditekan. Apa langkah pertamamu?',o:['Buka Logcat, filter level Error, lalu cari baris pesan exception','Instal ulang Android Studio','Ganti emulator dengan yang lebih besar'],a:0,e:'Logcat mencatat penyebab crash, jadi baca dulu sebelum mengubah apa pun.'},
+{q:'Logcat menunjuk error pada baris <code>findViewById(R.id.____)</code>. Di layout, ID tombolnya adalah <code>btn_simpan</code>. Isian yang benar?',o:['btnSimpan','btn_simpan','Simpan'],a:1,e:'ID harus sama persis dengan di layout, termasuk huruf dan garis bawah.'},
+{q:'Setelah menambah library di build.gradle, Gradle sync gagal dan tab Build penuh warna merah. Tindakan yang tepat?',o:['Hapus seluruh folder proyek','Abaikan error dan langsung klik Run','Baca pesan di tab Build, perbaiki dependensi, lalu klik Sync Now'],a:2,e:'Pesan di tab Build menunjuk dependensi yang bermasalah. Perbaiki lalu sync ulang.'}];
+
+const SL=['TextView','EditText','Button','ImageView'];
+const D=[
+{q:'Bagian mana yang dipakai untuk membaca pesan error saat aplikasi berjalan?',o:['Project','Editor','Logcat'],a:2,e:'Logcat menampilkan log dan pesan error.'},
+{q:'Apa fungsi Device Manager?',o:['Mengelola perangkat virtual (emulator)','Menulis kode program','Membaca pesan error'],a:0,e:'Device Manager membuat dan mengelola emulator.'},
+{q:'File mana yang memuat daftar Activity dan izin aplikasi?',o:['strings.xml','build.gradle','AndroidManifest.xml'],a:2,e:'Manifest menyimpan identitas, Activity, dan izin aplikasi.'},
+{q:'Untuk apa Gradle sync dilakukan?',o:['Menghapus data emulator','Memuat ulang pengaturan build agar proyek sesuai','Mengganti versi Android di HP'],a:1,e:'Sync menyelaraskan proyek dengan pengaturan build.gradle.'},
+{q:'Minimum SDK menentukan apa?',o:['Versi Android terlama yang bisa menjalankan aplikasi','Ukuran layar aplikasi','Bahasa pemrograman yang dipakai'],a:0,e:'Perangkat dengan Android lebih lama tidak bisa memasang aplikasi.'},
+{q:'Di folder mana file layout tampilan layar disimpan?',o:['res/layout','manifests','Gradle Scripts'],a:0,e:'File XML tampilan layar berada di res/layout.'},
+{q:'Level Logcat mana yang paling tepat untuk mencari penyebab crash?',o:['Verbose','Info','Error'],a:2,e:'Filter Error menyaring pesan kegagalan.'},
+{q:'Package name aplikasi sebaiknya...',o:['Sama dengan aplikasi lain','Unik untuk tiap aplikasi','Dikosongkan'],a:1,e:'Package name adalah identitas unik aplikasi.'}];
+
+/* ---------- navigasi ---------- */
+function hud(){const mm=/^m\d+$/.test(S.scr),i=mm?+S.scr.slice(1)-1:-1;
+E('hd').style.display=S.scr=='cover'?'none':'flex';
+E('hd').innerHTML='<b>Misi Android Studio</b><span>'+(i>=0?'Energi: '+'♥'.repeat(S.lv[i])+'♡'.repeat(3-S.lv[i]):'')+'</span><span>Skor: '+total()+'</span><span>Selesai: '+S.done.filter(x=>x).length+'/16</span><button id="mt">'+(mute?'Suara mati':'Suara aktif')+'</button><button id="mu">Menu</button>';
+E('mt').onclick=()=>{mute=!mute;hud()};E('mu').onclick=()=>go('menu')}
+function nav(){const s=S.scr,i=/^m\d+$/.test(s)?+s.slice(1)-1:(s=='demo'?15:-1),all=S.done.every(x=>x),z=S.done.indexOf(0);
+const pv={guide:'cover',menu:'guide',m1:'menu',m2:'menu',m3:'menu',m4:'menu',m5:'menu',demo:'menu',result:'menu',credit:'result'}[s]||(/^m\d+$/.test(s)?'menu':0);
+let nx={cover:'guide',guide:'menu',menu:all?'result':(z<15?'m'+(z+1):'demo'),result:'credit'}[s],ok=s!='credit',lb=s=='cover'?'Mulai':'Berikutnya';
+if(i>=0){ok=!!S.done[i];nx=i<14?'m'+(i+2):(i==14?'demo':(all?'result':'menu'));if(i==15)lb=all?'Lihat hasil':'Ke menu'}
+const mid=i>=0?(i==15?'Demo ke klien':'Misi '+(i+1)+' dari 15'):({guide:'Panduan',menu:'Menu misi',result:'Evaluasi',credit:'Informasi kreator'}[s]||'');
+E('ft').innerHTML='<button id="pv" '+(pv?'':'style="visibility:hidden"')+'>Kembali</button><span>'+mid+'</span><button class="pri" id="nx" '+(ok?'':'disabled')+'>'+lb+'</button>';
+if(pv)E('pv').onclick=()=>go(pv);E('nx').onclick=()=>nx&&go(nx)}
+function go(s){stopT();S.scr=s;R[s]();E('mn').scrollTop=0;hud();nav()}
+
+/* ---------- layar ---------- */
+const R={
+cover(){E('mn').innerHTML='<div class="row" style="height:100%;align-items:center"><div class="col" style="flex:1.3;gap:6px"><h1>Misi Android Studio</h1><h2 style="color:#F2B84B;font-size:38px">Bangun Aplikasi Pertamamu</h2><p>Studio Kodeku menerima proyek aplikasi kasir untuk koperasi sekolah. Jadilah developer junior: kenali alat kerjamu, rancang layar, hubungkan kode, dan bereskan bug sebelum tenggat!</p></div><svg viewBox="0 0 300 440" width="270" height="396" role="img" aria-label="Ilustrasi ponsel Android dengan kode"><rect x="20" y="10" width="260" height="420" rx="36" fill="#1c3a54" stroke="#F2B84B" stroke-width="5"/><rect x="40" y="50" width="220" height="340" rx="14" fill="#0b1620"/><circle cx="150" cy="130" r="44" fill="#1F7A52"/><rect x="60" y="210" width="130" height="14" rx="7" fill="#F2B84B"/><rect x="60" y="240" width="180" height="14" rx="7" fill="#8fb0cc"/><rect x="60" y="270" width="100" height="14" rx="7" fill="#8fb0cc"/><rect x="60" y="320" width="180" height="38" rx="10" fill="#F2B84B"/></svg></div>'},
+guide(){E('mn').innerHTML='<h2>Panduan</h2><div class="row"><div class="card col"><h2 style="font-size:26px">Tujuan belajar</h2><ul><li>Mengenali bagian jendela Android Studio dan fungsinya.</li><li>Menyusun langkah membuat dan menjalankan proyek.</li><li>Merancang layar dan menghubungkannya dengan kode.</li><li>Menemukan penyebab masalah lewat Logcat dan Gradle.</li></ul></div><div class="card col"><h2 style="font-size:26px">Aturan main</h2><ul><li>Ada 15 misi dan satu demo ke klien. Tiap misi punya 3 energi.</li><li>Jawaban benar memberi +100 skor. Jawaban salah mengurangi 1 energi.</li><li>Misi 5 punya waktu bonus, jadi ambil keputusan dengan cepat dan tepat.</li><li>Pilih misi bebas lewat Menu. Tombol Berikutnya aktif setelah misi selesai.</li></ul></div></div><p style="margin-top:14px">Mentor Bina menemanimu di studio. Kamu berlatih mengambil keputusan, memecahkan masalah, dan mengatur waktu seperti developer sungguhan.</p>'},
+menu(){E('mn').innerHTML='<h2 style="font-size:26px;margin-bottom:6px">Menu misi</h2><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">'+MS.map((t,i)=>'<div class="card col" style="gap:2px;padding:8px 14px"><b style="font-size:15px;color:#F2B84B">'+(i<15?'Misi '+(i+1):'Demo ke klien')+(S.done[i]?' (skor '+S.sc[i]+')':'')+'</b><div style="font-size:18px;line-height:1.2;min-height:40px">'+(i==15?'Serah Terima':t)+'</div><button class="pri" style="min-height:36px;padding:4px 12px;font-size:18px" data-a="g" data-v="'+(i<15?'m'+(i+1):'demo')+'">'+(S.done[i]?'Main lagi':'Mainkan')+'</button></div>').join('')+'</div>'},
+m1(){const m=S.m[0]=S.m[0]||{sel:null,ok:[]};
+const G=[['run',0,0,560,40],['pr',0,44,120,166],['ed',124,44,300,166],['dm',428,44,132,166],['lg',0,214,560,86]];
+const svg=G.map(([k,x,y,w,h])=>'<g class="reg '+(m.ok.includes(k)?'ok':'')+' '+(m.sel==k?'sel':'')+'" data-a="k1" data-v="'+k+'" tabindex="0" role="button" aria-label="Bagian jendela"><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8"/><text x="'+(x+w/2)+'" y="'+(y+h/2+7)+'" text-anchor="middle" font-size="'+(k=='dm'?15:20)+'">'+(m.ok.includes(k)?P.find(p=>p[2]==k)[0]:'?')+'</text></g>').join('');
+E('mn').innerHTML='<h2>Misi 1: Kenali ruang kerjamu</h2><p>Klik satu bagian di jendela Android Studio, lalu pilih fungsinya.</p><div class="row"><svg viewBox="0 0 560 300" width="600" height="321" role="img" aria-label="Denah jendela Android Studio">'+svg+'</svg><div class="col" style="gap:8px">'+PERM.map(i=>{const d=m.ok.includes(P[i][2]);return '<button data-a="d1" data-v="'+i+'" class="'+(d?'ok':'')+'" '+(d?'disabled':'')+'>'+P[i][1]+'</button>'}).join('')+'</div></div><div id="fb">Pilih dulu salah satu bagian jendela.</div>'},
+m2(){const m=S.m[1]=S.m[1]||{n:0};
+E('mn').innerHTML='<h2>Misi 2: Susun langkah proyek pertama</h2><p>Klik langkah sesuai urutan yang benar, mulai dari yang paling awal.</p><div class="row"><div class="col" style="gap:8px">'+SH.map(i=>'<button data-a="s2" data-v="'+i+'" class="'+(i<m.n?'ok':'')+'" '+(i<m.n?'disabled':'')+'>'+ST[i]+'</button>').join('')+'</div><div class="card col" style="gap:0">'+ST.map((s,i)=>'<div class="slot">'+(i+1)+'. '+(i<m.n?s:'…')+'</div>').join('')+'</div></div><div id="fb">Langkah apa yang paling pertama dilakukan?</div>'},
+m3(){const m=S.m[2]=S.m[2]||{ok:[],sel:null};
+const T=['Judul layar: teks Kasir Koperasi','Kolom untuk mengetik harga barang','Tombol untuk menghitung total','Tempat gambar logo koperasi'];
+const pv={TextView:'<b style="font-size:22px">Kasir Koperasi</b>',EditText:'<div style="border-bottom:2px solid #12263A;padding:4px 0;color:#5a6b7a">Harga barang</div>',Button:'<span style="background:#1F7A52;color:#fff;padding:6px 18px;border-radius:6px">Hitung</span>',ImageView:'<span style="background:#cfe0ee;display:inline-block;width:56px;height:40px;border-radius:6px;text-align:center;line-height:40px">Logo</span>'};
+E('mn').innerHTML='<h2>Misi 3: Rancang layar kasir</h2><p>Seret komponen ke bagian layar yang cocok. Bisa juga klik komponen, lalu klik tempatnya.</p><div class="row"><div class="col" style="max-width:300px;gap:8px">'+SL.map(c=>'<button draggable="true" data-a="c3" data-v="'+c+'" class="'+(m.ok.includes(c)?'ok':(m.sel==c?'pri':''))+'" '+(m.ok.includes(c)?'disabled':'')+'>'+c+'</button>').join('')+'</div><div class="card" style="flex:1;background:#fff;color:#12263A;display:flex;flex-direction:column;gap:6px;padding:12px 18px">'+SL.map((s,i)=>'<div data-a="t3" data-v="'+i+'" tabindex="0" role="button" aria-label="'+T[i]+'" style="border:2px dashed '+(m.ok.includes(s)?'#1F7A52':'#5a7a98')+';border-radius:8px;padding:8px 12px;min-height:56px;cursor:pointer">'+(m.ok.includes(s)?pv[s]:'<span style="font-size:18px">'+T[i]+'</span>')+'</div>').join('')+'</div></div><div id="fb">Pilih satu komponen dulu.</div>'},
+m4(){const m=S.m[3]=S.m[3]||{n:0};
+const ans=['btn_hitung','setOnClickListener','edit_harga','toString'],W=['setOnClick','edit_harga','toString','btnHitung','setOnClickListener','toInt','btn_hitung','editHarga'];
+const b=i=>'<span style="display:inline-block;min-width:150px;padding:0 8px;border-radius:6px;text-align:center;background:'+(i<m.n?'#1F7A52':(i==m.n?'#F2B84B':'#0b1620'))+';color:'+(i==m.n?'#12263A':'#fff')+';border:1px dashed #8fb0cc">'+(i<m.n?ans[i]:'____')+'</span>';
+E('mn').innerHTML='<h2>Misi 4: Hubungkan kode</h2><p>Isi bagian kosong yang menyala kuning dengan kata yang tepat, dari atas ke bawah.</p><div class="card" style="font-family:Consolas,monospace;font-size:21px;line-height:2.1">val tombol = findViewById&lt;Button&gt;(R.id.'+b(0)+')<br>tombol.'+b(1)+' { hitungTotal() }<br>val harga = findViewById&lt;EditText&gt;(R.id.'+b(2)+').text.'+b(3)+'()</div><p style="margin-top:10px;font-size:19px">Di layout: ID tombol adalah <code>btn_hitung</code>, ID kolom harga adalah <code>edit_harga</code>.</p><div style="display:flex;flex-wrap:wrap;gap:8px">'+W.map(w=>'<button data-a="w4" data-v="'+w+'">'+w+'</button>').join('')+'</div><div id="fb">Pilih kata untuk bagian kosong pertama.</div>'},
+m5(){const m=S.m[4]=S.m[4]||{q:0,t:90,w:0,iv:null};
+if(!m.iv&&!S.done[4])m.iv=setInterval(()=>{if(m.t>0)m.t--;const x=E('tm');if(x)x.textContent=m.t},1000);
+const c=Q[m.q];
+E('mn').innerHTML='<h2>Misi 5: Tiket bug dari klien</h2><div style="display:flex;justify-content:space-between;font-size:22px;margin-bottom:8px"><span>Kasus '+(m.q+1)+' dari 3</span><span>Sisa waktu bonus: <b id="tm">'+m.t+'</b> detik</span></div><div class="card"><p style="margin:0">'+c.q+'</p></div><div class="col" style="margin-top:12px;gap:8px">'+c.o.map((o,i)=>'<button data-a="o5" data-v="'+i+'">'+o+'</button>').join('')+'</div><div id="fb">Pilih tindakan yang paling tepat.</div>'},
+demo(){const m=S.m[15]=S.m[15]||{q:0,set:D.map((x,i)=>i).sort(()=>Math.random()-.5).slice(0,5)};
+const c=D[m.set[m.q]];
+E('mn').innerHTML='<h2>Demo ke klien</h2><div style="font-size:22px;margin-bottom:8px">Soal '+(m.q+1)+' dari 5</div><div class="card"><p style="margin:0">'+c.q+'</p></div><div class="col" style="margin-top:12px;gap:8px">'+c.o.map((o,i)=>'<button data-a="o6" data-v="'+i+'">'+o+'</button>').join('')+'</div><div id="fb">Pilih jawaban yang paling tepat.</div>'},
+result(){const t=total(),p=Math.min(1,t/6300),n=p>=.85?3:p>=.6?2:1,L=['Calon developer, ayo coba lagi','Android Developer Junior','Android Developer Handal'][n-1],q=(...a)=>a.reduce((x,i)=>x+S.sc[i],0);
+const K=[['Mengenali',q(0,5,6,9)/1400],['Menyusun',q(1,2,3,7,8,10,12,13)/3500],['Menganalisis',q(4,11,14,15)/1400]],lo=K.slice().sort((a,b)=>a[1]-b[1])[0][0];
+E('mn').innerHTML='<div class="row"><div class="card col" style="align-items:center;text-align:center;justify-content:center;gap:6px"><div style="font-size:56px;color:#F2B84B" aria-label="'+n+' bintang">'+'★'.repeat(n)+'☆'.repeat(3-n)+'</div><h2 style="margin:0">'+L+'</h2><p style="font-size:24px;margin:0">Skor total: <b>'+t+'</b></p>'+K.map(k=>'<div style="width:100%;text-align:left;font-size:17px">'+k[0]+'<div style="height:12px;background:#0b1620;border-radius:6px"><div style="height:12px;width:'+Math.round(Math.min(1,k[1])*100)+'%;background:#F2B84B;border-radius:6px"></div></div></div>').join('')+'<p style="font-size:18px;margin:4px 0">Saran: ulangi misi yang melatih kemampuan '+lo.toLowerCase()+'.</p><button class="pri" id="ag">Main lagi</button></div><div class="col"><div class="card"><h2 style="font-size:22px">Ringkasan pencapaian</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:0 18px">'+MS.map((x,i)=>'<div style="display:flex;justify-content:space-between;gap:6px;font-size:14px;padding:3px 0;border-bottom:1px solid #3d5c78"><span>'+(i<15?(i+1)+'. ':'')+x+'</span><b>'+S.sc[i]+'</b></div>').join('')+'</div></div><div class="card"><h2 style="font-size:22px">Refleksi</h2><p style="font-size:19px">Jika klien melapor aplikasi crash, apa yang pertama kali kamu lakukan dan mengapa?</p><textarea style="height:60px" aria-label="Jawaban refleksi"></textarea></div></div></div>';
+E('ag').onclick=()=>{S.done=Z(0);S.sc=Z(0);S.lv=Z(3);S.m=Z(null);go('menu')}},
+credit(){E('mn').innerHTML='<h2>Informasi kreator</h2><div class="card"><p>Kreator: [isi nama kreator, boleh disertai gelar]</p><p>Organisasi: [isi nama sekolah atau institusi]</p></div><div class="card" style="margin-top:14px"><p style="font-size:20px">Aset: seluruh ilustrasi berupa grafik vektor (SVG) yang dibuat oleh pengembang. Bunyi umpan balik dihasilkan oleh Web Audio API. Tidak ada aset atau tautan eksternal.</p></div>'}
+};
+
+/* ---------- misi 6-15 ---------- */
+const MS=['Kenali Ruang Kerjamu','Mulai Proyek','Rancang Layar Kasir','Hubungkan Kode','Tiket Bug dari Klien','Peta Proyek','Pilih Tata Letak','Daur Hidup Activity','Pindah Layar','Variabel dan Tipe Data','Alur Debugging','Dunia Kecerdasan Artifisial','Hitung Diskon','Menerbitkan APK','Etika dan Keamanan','Demo ke klien'];
+const X={
+5:{k:'c',qs:[{q:'File mana yang menyimpan teks seperti nama aplikasi agar mudah diganti?',o:['AndroidManifest.xml','strings.xml','gradle.properties'],a:1,e:'strings.xml menyimpan teks yang dipakai aplikasi.'},{q:'Folder mana yang menyimpan gambar dan ikon aplikasi?',o:['res/layout','manifests','res/drawable'],a:2,e:'Gambar dan ikon disimpan di res/drawable.'},{q:'Kamu ingin menambah izin akses internet. File mana yang diubah?',o:['activity_main.xml','strings.xml','AndroidManifest.xml'],a:2,e:'Izin aplikasi dideklarasikan di AndroidManifest.xml.'}]},
+6:{k:'c',qs:[{q:'Komponen harus tersusun berurutan ke bawah satu per satu. Layout yang cocok?',o:['FrameLayout','LinearLayout vertikal','WebView'],a:1,e:'LinearLayout menyusun komponen lurus dalam satu arah.'},{q:'Daftar 100 produk perlu digulir dan hemat memori. Komponen yang tepat?',o:['TextView','Switch','RecyclerView'],a:2,e:'RecyclerView menampilkan daftar panjang dengan efisien.'},{q:'Tombol harus di tengah layar dengan jarak tetap dari tepi. Layout yang fleksibel?',o:['ConstraintLayout','Toast','Intent'],a:0,e:'ConstraintLayout mengatur posisi lewat aturan batasan.'}]},
+7:{k:'o',d:'Urutkan fungsi yang dipanggil saat Activity dibuka sampai tidak terlihat lagi.',st:['onCreate','onStart','onResume','onPause','onStop']},
+8:{k:'f',c:'val intent = {0}(this, DetailActivity::class.java)<br>intent.{1}("nama", "Bina")<br>{2}(intent)',a:['Intent','putExtra','startActivity'],w:['Intent','putExtra','startActivity','Toast','finish','getExtra'],e:['Intent berisi tujuan perpindahan layar.','putExtra menyelipkan data untuk layar tujuan.']},
+9:{k:'c',qs:[{q:'Harga barang tidak berubah setelah diisi. Kata kunci Kotlin yang tepat?',o:['var','fun','val'],a:2,e:'val dipakai untuk nilai yang tidak diubah lagi.'},{q:'Jumlah stok (bilangan bulat) cocok memakai tipe apa?',o:['String','Int','Boolean'],a:1,e:'Int menyimpan bilangan bulat.'},{q:'Status lunas bernilai benar atau salah. Tipe yang cocok?',o:['Int','Double','Boolean'],a:2,e:'Boolean hanya bernilai true atau false.'}]},
+10:{k:'o',d:'Urutkan langkah memperbaiki bug dengan benar.',st:['Ulangi bug sampai terlihat jelas','Baca pesan error di Logcat','Temukan baris kode penyebabnya','Perbaiki kode','Uji ulang di emulator']},
+11:{k:'c',qs:[{q:'Aplikasi kasir menyarankan barang yang sering dibeli bersama. Ini contoh apa?',o:['Kompresi gambar','Sistem rekomendasi','Pemindai virus'],a:1,e:'Sistem rekomendasi memakai data pembelian untuk memberi saran.'},{q:'Agar model AI mengenali tulisan tangan, ia harus dilatih dengan apa?',o:['Warna latar aplikasi','Nama package','Banyak contoh data tulisan tangan'],a:2,e:'Model AI belajar dari contoh data.'},{q:'ML Kit milik Google dapat dipakai di Android untuk apa?',o:['Membuat emulator','Mengenali teks dari gambar kamera','Menyusun Gradle'],a:1,e:'ML Kit menyediakan fitur AI siap pakai seperti pengenalan teks.'}]},
+12:{k:'f',c:'if (total {0} 100000) {<br>&nbsp;&nbsp;diskon = total * {1}<br>}<br>tampilkan(total - {2})',a:['>=','0.1','diskon'],w:['>=','=','0.1','10','diskon','total'],e:['Diskon berlaku jika total mencapai 100000.','Diskon 10 persen sama dengan 0.1.']},
+13:{k:'o',d:'Urutkan langkah membuat APK siap pakai.',st:['Tetapkan versi aplikasi','Buat kunci tanda tangan (keystore)','Pilih Build > Generate Signed Bundle / APK','Pilih varian release','Uji APK di HP sungguhan']},
+14:{k:'c',qs:[{q:'Aplikasi kasir meminta akses kontak dan lokasi padahal tidak dipakai. Sikap yang benar?',o:['Minta semua izin agar aman','Sembunyikan izinnya','Minta izin seperlunya saja'],a:2,e:'Minta hanya izin yang benar-benar dibutuhkan.'},{q:'Hasil rekomendasi AI terlihat keliru. Yang sebaiknya dilakukan?',o:['Percaya sepenuhnya','Periksa dan verifikasi dulu','Hapus aplikasinya'],a:1,e:'AI bisa salah, jadi hasilnya perlu diperiksa.'},{q:'Kamu memakai potongan kode orang lain. Sikap yang benar?',o:['Mengaku buatan sendiri','Cantumkan sumber dan cek lisensi','Hapus komentarnya'],a:1,e:'Menghargai karya orang lain adalah etika developer.'}]}};
+function rx(){const i=+S.scr.slice(1)-1,x=X[i],m=S.m[i]=S.m[i]||{n:0,w:0};
+let h='<h2>Misi '+(i+1)+': '+MS[i]+'</h2>',f='Pilih jawaban yang paling tepat.';
+if(x.k=='c'){const c=x.qs[m.n];h+='<div style="font-size:22px;margin-bottom:8px">Pertanyaan '+(m.n+1)+' dari 3</div><div class="card"><p style="margin:0">'+c.q+'</p></div><div class="col" style="margin-top:12px;gap:8px">'+c.o.map((o,k)=>'<button data-a="xc" data-v="'+k+'">'+o+'</button>').join('')+'</div>'}
+else if(x.k=='o'){const n=x.st.length;f='Langkah apa yang paling awal?';h+='<p>'+x.d+'</p><div class="row"><div class="col" style="gap:8px">'+[...Array(n).keys()].map(k=>(k*3+1)%n).map(k=>'<button data-a="xo" data-v="'+k+'" class="'+(k<m.n?'ok':'')+'" '+(k<m.n?'disabled':'')+'>'+x.st[k]+'</button>').join('')+'</div><div class="card col" style="gap:0">'+x.st.map((t,k)=>'<div class="slot">'+(k+1)+'. '+(k<m.n?t:'…')+'</div>').join('')+'</div></div>'}
+else{f='Pilih kata untuk bagian kosong pertama.';const b=k=>'<span style="display:inline-block;min-width:130px;padding:0 8px;border-radius:6px;text-align:center;background:'+(k<m.n?'#1F7A52':(k==m.n?'#F2B84B':'#0b1620'))+';color:'+(k==m.n?'#12263A':'#fff')+';border:1px dashed #8fb0cc">'+(k<m.n?x.a[k]:'____')+'</span>';
+h+='<p>Isi bagian kosong yang menyala kuning, dari atas ke bawah.</p><div class="card" style="font-family:Consolas,monospace;font-size:21px;line-height:2.1">'+x.c.replace(/\{(\d)\}/g,(_,k)=>b(+k))+'</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">'+x.w.map(w=>'<button data-a="xf" data-v="'+w+'">'+w+'</button>').join('')+'</div>'}
+E('mn').innerHTML=h+'<div id="fb">'+f+'</div>'}
+for(let k=6;k<=15;k++)R['m'+k]=rx;
+
+/* ---------- aksi ---------- */
+const A={
+g:v=>{const i=v=='demo'?15:+v.slice(1)-1;if(S.done[i]){S.done[i]=0;S.sc[i]=0;S.lv[i]=3;S.m[i]=null}go(v)},
+k1(k){const m=S.m[0];if(m.ok.includes(k))return;m.sel=k;R.m1();fb('Bagian dipilih. Sekarang pilih fungsinya.')},
+d1(v){const m=S.m[0];v=+v;if(!m.sel){fb('Klik dulu salah satu bagian jendela.','bad');return}
+ if(P[v][2]==m.sel){m.ok.push(m.sel);m.sel=null;S.sc[0]+=100;snd(1);R.m1();hud();
+  if(m.ok.length==5){S.done[0]=1;nav();fb('Misi 1 selesai! Kamu sudah mengenal ruang kerjamu. +100','ok')}else fb('Benar! '+P[v][0]+': '+P[v][1]+'. +100','ok')}
+ else{lose(0);fb('Belum tepat. Petunjuk: '+P.find(p=>p[2]==m.sel)[3],'bad')}},
+s2(v){const m=S.m[1];v=+v;
+ if(v==m.n){m.n++;S.sc[1]+=100;snd(1);R.m2();hud();
+  if(m.n==6){S.done[1]=1;nav();fb('Misi 2 selesai! Aplikasimu berjalan. '+EX[v]+' +100','ok')}else fb('Tepat! '+EX[v]+' +100','ok')}
+ else{lose(1);fb('Belum urutan itu. Tanyakan: apa yang harus siap sebelum langkah ini?','bad')}},
+o5(v){const m=S.m[4],c=Q[m.q],bs=document.querySelectorAll('[data-a=o5]');v=+v;
+ if(v==c.a){const pts=m.w?50:100;S.sc[4]+=pts;snd(1);bs.forEach((b,i)=>{b.disabled=true;if(i==v)b.classList.add('ok')});
+  if(m.q==2){stopT();const bn=m.t*2;S.sc[4]+=bn;S.done[4]=1;nav();fb(c.e+' +'+pts+'. Misi 5 selesai! Bonus waktu +'+bn,'ok')}
+  else{fb(c.e+' +'+pts,'ok');E('mn').insertAdjacentHTML('beforeend','<button class="pri" style="margin-top:10px" data-a="n5">Kasus berikutnya</button>')}
+  hud()}
+ else{m.w=1;bs[v].disabled=true;bs[v].classList.add('bad');lose(4);fb('Belum tepat. Pikirkan lagi penyebab masalah sebelum bertindak. Coba pilihan lain.','bad')}},
+n5(){const m=S.m[4];m.q++;m.w=0;R.m5()},
+c3(v){const m=S.m[2];if(m.ok.includes(v))return;m.sel=v;R.m3();fb('Komponen '+v+' dipilih. Sekarang pilih tempatnya.')},
+t3(i){const m=S.m[2],HI=['Judul berupa teks yang hanya ditampilkan.','Pengguna harus bisa mengetik di sini.','Pengguna menekan ini untuk menjalankan aksi.','Ini menampilkan gambar, bukan teks.'];i=+i;
+ if(!m.sel){fb('Pilih dulu komponennya.','bad');return}
+ if(m.ok.includes(SL[i]))return;
+ if(SL[i]==m.sel){m.ok.push(m.sel);m.sel=null;S.sc[2]+=100;snd(1);R.m3();hud();
+  if(m.ok.length==4){S.done[2]=1;nav();fb('Misi 3 selesai! Layar kasir siap dipakai. +100','ok')}else fb('Tepat! Komponen itu cocok dengan tempatnya. +100','ok')}
+ else{lose(2);fb('Belum cocok. Petunjuk: '+HI[i],'bad')}},
+w4(v){const m=S.m[3],ans=['btn_hitung','setOnClickListener','edit_harga','toString'],EX=['ID harus sama persis dengan di layout.','Aksi klik dipasang dengan setOnClickListener.','Kolom harga memakai ID edit_harga.','Isi kolom diambil sebagai teks dengan toString().'];
+ if(v==ans[m.n]){m.n++;S.sc[3]+=100;snd(1);R.m4();hud();
+  if(m.n==4){S.done[3]=1;nav();fb('Misi 4 selesai! Tombol Hitung kini berfungsi. +100','ok')}else fb('Tepat! '+EX[m.n-1]+' +100','ok')}
+ else{lose(3);fb('Belum tepat. Cek lagi ID di layout dan nama fungsi yang dipakai.','bad')}},
+o6(v){const m=S.m[15],c=D[m.set[m.q]],bs=document.querySelectorAll('[data-a=o6]');v=+v;
+ bs.forEach((b,i)=>{b.disabled=true;if(i==c.a)b.classList.add('ok');else if(i==v)b.classList.add('bad')});
+ if(v==c.a){S.sc[15]+=100;snd(1);fb('Benar! '+c.e+' +100','ok')}else{snd(0);fb('Belum tepat. '+c.e,'bad')}
+ hud();
+ if(m.q==4){S.done[15]=1;nav();fb(E('fb').textContent+' Demo selesai!',E('fb').className)}
+ else E('mn').insertAdjacentHTML('beforeend','<button class="pri" style="margin-top:10px" data-a="n6">Soal berikutnya</button>')},
+n6(){S.m[15].q++;R.demo()},
+xc(v){const i=+S.scr.slice(1)-1,m=S.m[i],c=X[i].qs[m.n],bs=document.querySelectorAll('[data-a=xc]');v=+v;
+ if(v==c.a){const p=m.w?50:100;S.sc[i]+=p;snd(1);bs.forEach((b,k)=>{b.disabled=true;if(k==v)b.classList.add('ok')});hud();
+  if(m.n==2){S.done[i]=1;nav();fb(c.e+' +'+p+'. Misi '+(i+1)+' selesai!','ok')}
+  else{fb(c.e+' +'+p,'ok');E('mn').insertAdjacentHTML('beforeend','<button class="pri" style="margin-top:10px" data-a="xn">Berikutnya</button>')}}
+ else{m.w=1;bs[v].disabled=true;bs[v].classList.add('bad');lose(i);fb('Belum tepat. Pikirkan lagi, lalu coba pilihan lain.','bad')}},
+xn(){const m=S.m[+S.scr.slice(1)-1];m.n++;m.w=0;rx()},
+xo(v){const i=+S.scr.slice(1)-1,m=S.m[i],x=X[i];v=+v;
+ if(v==m.n){m.n++;S.sc[i]+=100;snd(1);rx();hud();
+  if(m.n==x.st.length){S.done[i]=1;nav();fb('Misi '+(i+1)+' selesai! Urutanmu sudah tepat. +100','ok')}else fb('Tepat! '+x.st[v]+'. +100','ok')}
+ else{lose(i);fb('Belum urutan itu. Apa yang harus siap sebelum langkah ini?','bad')}},
+xf(v){const i=+S.scr.slice(1)-1,m=S.m[i],x=X[i];
+ if(v==x.a[m.n]){m.n++;S.sc[i]+=100;snd(1);rx();hud();
+  if(m.n==x.a.length){S.done[i]=1;nav();fb('Misi '+(i+1)+' selesai! Kodenya berfungsi. +100','ok')}else fb('Tepat! '+x.e[m.n-1]+' +100','ok')}
+ else{lose(i);fb('Belum tepat. Baca lagi baris kode dan pilih kata yang cocok.','bad')}},
+};
+E('mn').onclick=e=>{const t=e.target.closest('[data-a]');if(t&&!t.disabled){A[t.dataset.a](t.dataset.v);if(document.body.classList.contains('mob')&&t.dataset.a!='g'){const x=E('mn').querySelector('[data-a=xn],[data-a=n5],[data-a=n6]')||E('fb');x&&x.scrollIntoView({block:'nearest'})}}};
+E('mn').onkeydown=e=>{if(e.key=='Enter'||e.key==' '){const t=e.target.closest('g[data-a],div[role=button][data-a]');if(t){e.preventDefault();A[t.dataset.a](t.dataset.v)}}};
+E('mn').addEventListener('dragstart',e=>{const t=e.target.closest('[data-a=c3]');if(t){e.dataTransfer.setData('text/plain',t.dataset.v);S.m[2].sel=t.dataset.v}});
+E('mn').addEventListener('dragover',e=>{if(e.target.closest('[data-a=t3]'))e.preventDefault()});
+E('mn').addEventListener('drop',e=>{const t=e.target.closest('[data-a=t3]');if(t){e.preventDefault();A.t3(t.dataset.v)}});
+function fit(){const mob=innerWidth<=900||innerHeight<=480;document.body.classList.toggle('mob',mob);if(mob){E('stage').style.transform='';return}const s=Math.min(innerWidth/1280,innerHeight/720);E('stage').style.transform='translate('+(-640*s)+'px,'+(-360*s)+'px) scale('+s+')'}
+addEventListener('resize',fit);fit();go('cover');
+</script></body></html>
